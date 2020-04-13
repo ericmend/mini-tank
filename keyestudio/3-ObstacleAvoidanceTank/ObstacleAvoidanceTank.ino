@@ -77,9 +77,8 @@ void back()         // move backward
   analogWrite(pinRF, 255);
 }
 
-void detection()    // measure 3 angles (0.90.179)
+void detection()    // measure 3 angles (20.100.180)
 {
-  int delay_time = 250;     // stabilizing time for servo motor after moving backward
   ask_pin_F();              // read the distance ahead
   if (Fspeedd < 10)         // if distance ahead is <10cm
   {
@@ -97,23 +96,23 @@ void detection()    // measure 3 angles (0.90.179)
     ask_pin_R();            // read distance on the right
     delay(delay_time);      // stabilizing time for servo motor
 
-    if (Lspeedd > Rspeedd)              // if distance on the left is >distance on the right
+    if (Lspeedd > Rspeedd)                   // if distance on the left is >distance on the right
     {
-      directionn = Lgo;                 // move to the L
+      directionn = Lgo;                      // move to the L
+    }
+    else if (Lspeedd <= Rspeedd)             // if distance on the left is <= distance on the right
+    {
+      directionn = Rgo;                      // move to the right
     }
 
-    if (Lspeedd <= Rspeedd)             // if distance on the left is <= distance on the right
+    if (Lspeedd < 10 && Rspeedd < 10)        // if distance on left and right are both <10cm
     {
-      directionn = Rgo;                 // move to the right
-    }
-    if (Lspeedd < 10 && Rspeedd < 10)   // if distance on left and right are both <10cm
-    {
-      directionn = Bgo;                 // move backward
+      directionn = Bgo;                      // move backward
     }
   }
-  else                                  // if distance ahead is >25cm
+  else                                       // if distance ahead is >25cm
   {
-    directionn = Fgo;                   // move forward
+    directionn = Fgo;                        // move forward
   }
 }
 
@@ -128,6 +127,7 @@ void ask_pin_F()    // measure the distance ahead
   float Fdistance = pulseIn(inputPin, HIGH);  // read the time in between
   Fdistance = Fdistance / 5.8 / 10;           // convert time into distance (unit: cm)
   Fspeedd = Fdistance;                        // read the distance into Fspeedd
+  Serial.println("Fspeedd: " + String(Fspeedd));
 }
 
 void ask_pin_L()    // measure distance on the left
@@ -142,6 +142,7 @@ void ask_pin_L()    // measure distance on the left
   float Ldistance = pulseIn(inputPin, HIGH);  // read the time in between
   Ldistance = Ldistance / 5.8 / 10;           // convert time into distance (unit: cm)
   Lspeedd = Ldistance;                        // read the distance into Lspeedd
+  Serial.println("Lspeedd: " + String(Lspeedd));
 }
 
 void ask_pin_R()    //  measure distance on the right
@@ -156,35 +157,40 @@ void ask_pin_R()    //  measure distance on the right
   float Rdistance = pulseIn(inputPin, HIGH);  // read the time in between
   Rdistance = Rdistance / 5.8 / 10;           // convert time into distance (unit: cm)
   Rspeedd = Rdistance;                        // read the distance into Rspeedd
+  Serial.println("Rspeedd: " + String(Rspeedd));
 }
 
 void loop()
 {
   myservo.write(homeSM);  // home set the servo motor, ready for next measurement
   detection();            // measure the angle and determine which direction to move
-  if (directionn == 2)    // if directionn= 2
+  if (directionn == Bgo)  // if directionn= 2
   {
+    Serial.println("Backward");
     back();
     delay(800);           //  go backward
-    left() ;
+    left();
     delay(200);           // Move slightly to the left (to prevent stuck in dead end)
   }
-  if (directionn == 6)    // if directionn = 6
+  if (directionn == Rgo)  // if directionn = 6
   {
+    Serial.println("Right");
     back();
     delay(100);
     right();
     delay(600);           // turn right
   }
-  if (directionn == 4)    // if directionn = 4
+  if (directionn == Lgo)  // if directionn = 4
   {
+    Serial.println("Left");
     back();
-    delay(600);
+    delay(100);
     left();
     delay(600);           // turn left
   }
-  if (directionn == 8)    // if directionn = 8
+  if (directionn == Fgo)  // if directionn = 8
   {
+    Serial.println("Forward");
     advance();            // move forward
     delay(100);
   }

@@ -64,7 +64,7 @@ void setup()
   Serial.begin(9600);
   Serial.println("Starting now...");
 
-  // ultrasonic
+  //  // ultrasonic
   //  pinMode(Trig_pin, OUTPUT);        // initialize the pulse pin as output:
   //  pinMode(Echo_pin, INPUT);         // initialize the echo_pin pin as an input:
 
