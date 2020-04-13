@@ -1,11 +1,17 @@
+/*
+    L = Left
+    R = Right
+    F = forward
+    B = backward
+*/
 #include <Servo.h>
-int pinLB = 12; // define pin 12
-int pinLF = 3;  // define pin 3
-int pinRB = 13; // define pin 13
-int pinRF = 11; // define pin 11
+int pinLB = 12;       // define pin 12
+int pinLF = 3;        // define pin 3
+int pinRB = 13;       // define pin 13
+int pinRF = 11;       // define pin 11
 ////////////////////////////////
-int inputPin = 4;  // define pin for sensor echo
-int outputPin = 5; // define pin for sensor trig
+int inputPin = 4;     // define pin for sensor echo
+int outputPin = 5;    // define pin for sensor trig
 
 int Fspeedd = 0;      // forward speed
 int Rspeedd = 0;      // right speed
@@ -17,39 +23,45 @@ int Fgo = 8;          // Move F
 int Rgo = 6;          // move to the R
 int Lgo = 4;          // move to the L
 int Bgo = 2;          // move B
+int homeSM = 100;     // home set the servo motor
+
 void setup()
 {
-  Serial.begin(9600);         // Define motor output pin
-  pinMode(pinLB, OUTPUT);     // pin 12
-  pinMode(pinLF, OUTPUT);     // pin 3 (PWM)
-  pinMode(pinRB, OUTPUT);     // pin 13
-  pinMode(pinRF, OUTPUT);     // pin 11 (PWM)
-  pinMode(inputPin, INPUT);   // define input pin for sensor
-  pinMode(outputPin, OUTPUT); // define output pin for sensor
-  myservo.attach(9);          // Define servo motor output pin to D9 (PWM)
+  Serial.begin(9600);          // Define motor output pin
+  pinMode(pinLB, OUTPUT);      // pin 12
+  pinMode(pinLF, OUTPUT);      // pin 3 (PWM)
+  pinMode(pinRB, OUTPUT);      // pin 13
+  pinMode(pinRF, OUTPUT);      // pin 11 (PWM)
+  pinMode(inputPin, INPUT);    // define input pin for sensor
+  pinMode(outputPin, OUTPUT);  // define output pin for sensor
+  myservo.attach(9);           // Define servo motor output pin to D9 (PWM)
 }
-void advance() // move forward
+
+void advance()      // move forward
 {
-  digitalWrite(pinLB, LOW); // right wheel moves forward
-  digitalWrite(pinRB, LOW); // left wheel moves forward
+  digitalWrite(pinLB, LOW);   // right wheel moves forward
+  digitalWrite(pinRB, LOW);   // left wheel moves forward
   analogWrite(pinLF, 255);
   analogWrite(pinRF, 255);
 }
-void stopp() // stop
+
+void stopp()        // stop
 {
   digitalWrite(pinLB, HIGH);
   digitalWrite(pinRB, HIGH);
   analogWrite(pinLF, 0);
   analogWrite(pinRF, 0);
 }
-void right() // turn right (single wheel)
+
+void right()        // turn right (single wheel)
 {
   digitalWrite(pinLB, HIGH); // wheel on the left moves forward
   digitalWrite(pinRB, LOW);  // wheel on the right moves backward
   analogWrite(pinLF, 255);
   analogWrite(pinRF, 255);
 }
-void left() // turn left (single wheel)
+
+void left()         // turn left (single wheel)
 {
   digitalWrite(pinLB, LOW);  // wheel on the left moves backward
   digitalWrite(pinRB, HIGH); // wheel on the right moves forward
@@ -57,118 +69,123 @@ void left() // turn left (single wheel)
   analogWrite(pinRF, 255);
 }
 
-void back() // move backward
+void back()         // move backward
 {
   digitalWrite(pinLB, HIGH); // motor moves to left rear
   digitalWrite(pinRB, HIGH); // motor moves to right rear
   analogWrite(pinLF, 255);
   analogWrite(pinRF, 255);
 }
-void detection() // measure 3 angles (0.90.179)
+
+void detection()    // measure 3 angles (0.90.179)
 {
-  int delay_time = 250; // stabilizing time for servo motor after moving backward
-  ask_pin_F();          // read the distance ahead
-  if (Fspeedd < 10)     // if distance ahead is <10cm
+  int delay_time = 250;     // stabilizing time for servo motor after moving backward
+  ask_pin_F();              // read the distance ahead
+  if (Fspeedd < 10)         // if distance ahead is <10cm
   {
-    stopp(); // clear data
+    stopp();                // clear data
     delay(100);
-    back(); // move backward for 0.2S
+    back();                 // move backward for 0.2S
     delay(200);
   }
-  if (Fspeedd < 25) // if distance ahead is <25cm
+  if (Fspeedd < 25)         // if distance ahead is <25cm
   {
     stopp();
-    delay(100);        // clear data
-    ask_pin_L();       // read distance on the left
-    delay(delay_time); // stabilizing time for servo motor
-    ask_pin_R();       // read distance on the right
-    delay(delay_time); // stabilizing time for servo motor
+    delay(100);             // clear data
+    ask_pin_L();            // read distance on the left
+    delay(delay_time);      // stabilizing time for servo motor
+    ask_pin_R();            // read distance on the right
+    delay(delay_time);      // stabilizing time for servo motor
 
-    if (Lspeedd > Rspeedd) // if distance on the left is >distance on the right
+    if (Lspeedd > Rspeedd)              // if distance on the left is >distance on the right
     {
-      directionn = Lgo; // move to the L
+      directionn = Lgo;                 // move to the L
     }
 
-    if (Lspeedd <= Rspeedd) // if distance on the left is <= distance on the right
+    if (Lspeedd <= Rspeedd)             // if distance on the left is <= distance on the right
     {
-      directionn = Rgo; // move to the right
+      directionn = Rgo;                 // move to the right
     }
-    if (Lspeedd < 10 && Rspeedd < 10) // if distance on left and right are both <10cm
+    if (Lspeedd < 10 && Rspeedd < 10)   // if distance on left and right are both <10cm
     {
-      directionn = Bgo; // move backward
+      directionn = Bgo;                 // move backward
     }
   }
-  else // if distance ahead is >25cm
+  else                                  // if distance ahead is >25cm
   {
-    directionn = Fgo; // move forward
+    directionn = Fgo;                   // move forward
   }
 }
-void ask_pin_F() // measure the distance ahead
+
+void ask_pin_F()    // measure the distance ahead
 {
-  myservo.write(90);
-  digitalWrite(outputPin, LOW); // ultrasonic sensor transmit low level signal 2μs
+  myservo.write(homeSM);
+  digitalWrite(outputPin, LOW);               // ultrasonic sensor transmit low level signal 2μs
   delayMicroseconds(2);
-  digitalWrite(outputPin, HIGH); // ultrasonic sensor transmit high level signal10μs, at least 10μs
+  digitalWrite(outputPin, HIGH);              // ultrasonic sensor transmit high level signal10μs, at least 10μs
   delayMicroseconds(10);
-  digitalWrite(outputPin, LOW);              // keep transmitting low level signal
-  float Fdistance = pulseIn(inputPin, HIGH); // read the time in between
-  Fdistance = Fdistance / 5.8 / 10;          // convert time into distance (unit: cm)
-  Fspeedd = Fdistance;                       // read the distance into Fspeedd
+  digitalWrite(outputPin, LOW);               // keep transmitting low level signal
+  float Fdistance = pulseIn(inputPin, HIGH);  // read the time in between
+  Fdistance = Fdistance / 5.8 / 10;           // convert time into distance (unit: cm)
+  Fspeedd = Fdistance;                        // read the distance into Fspeedd
 }
-void ask_pin_L() // measure distance on the left
+
+void ask_pin_L()    // measure distance on the left
 {
-  myservo.write(5);
+  myservo.write(homeSM - 80);
   delay(delay_time);
-  digitalWrite(outputPin, LOW); // ultrasonic sensor transmit low level signal 2μs
+  digitalWrite(outputPin, LOW);               // ultrasonic sensor transmit low level signal 2μs
   delayMicroseconds(2);
-  digitalWrite(outputPin, HIGH); // ultrasonic sensor transmit high level signal10μs, at least 10μs
+  digitalWrite(outputPin, HIGH);              // ultrasonic sensor transmit high level signal10μs, at least 10μs
   delayMicroseconds(10);
-  digitalWrite(outputPin, LOW);              // keep transmitting low level signal
-  float Ldistance = pulseIn(inputPin, HIGH); // read the time in between
-  Ldistance = Ldistance / 5.8 / 10;          // convert time into distance (unit: cm)
-  Lspeedd = Ldistance;                       // read the distance into Lspeedd
+  digitalWrite(outputPin, LOW);               // keep transmitting low level signal
+  float Ldistance = pulseIn(inputPin, HIGH);  // read the time in between
+  Ldistance = Ldistance / 5.8 / 10;           // convert time into distance (unit: cm)
+  Lspeedd = Ldistance;                        // read the distance into Lspeedd
 }
-void ask_pin_R() //  measure distance on the right
+
+void ask_pin_R()    //  measure distance on the right
 {
-  myservo.write(177);
+  myservo.write(homeSM + 80);
   delay(delay_time);
-  digitalWrite(outputPin, LOW); // ultrasonic sensor transmit low level signal 2μs
+  digitalWrite(outputPin, LOW);               // ultrasonic sensor transmit low level signal 2μs
   delayMicroseconds(2);
-  digitalWrite(outputPin, HIGH); // ultrasonic sensor transmit high level signal10μs, at least 10μs
+  digitalWrite(outputPin, HIGH);              // ultrasonic sensor transmit high level signal10μs, at least 10μs
   delayMicroseconds(10);
-  digitalWrite(outputPin, LOW);              // keep transmitting low level signal
-  float Rdistance = pulseIn(inputPin, HIGH); // read the time in between
-  Rdistance = Rdistance / 5.8 / 10;          // convert time into distance (unit: cm)
-  Rspeedd = Rdistance;                       // read the distance into Rspeedd
+  digitalWrite(outputPin, LOW);               // keep transmitting low level signal
+  float Rdistance = pulseIn(inputPin, HIGH);  // read the time in between
+  Rdistance = Rdistance / 5.8 / 10;           // convert time into distance (unit: cm)
+  Rspeedd = Rdistance;                        // read the distance into Rspeedd
 }
+
 void loop()
 {
-  myservo.write(90);   // home set the servo motor, ready for next measurement
-  detection();         // measure the angle and determine which direction to move
-  if (directionn == 2) // if directionn= 2
+  myservo.write(homeSM);  // home set the servo motor, ready for next measurement
+  detection();            // measure the angle and determine which direction to move
+  if (directionn == 2)    // if directionn= 2
   {
     back();
-    delay(800); //  go backward
-    left();
-    delay(200); // Move slightly to the left (to prevent stuck in dead end)
+    delay(800);           //  go backward
+    left() ;
+    delay(200);           // Move slightly to the left (to prevent stuck in dead end)
   }
-  if (directionn == 6) // if directionn = 6
+  if (directionn == 6)    // if directionn = 6
   {
     back();
     delay(100);
     right();
-    delay(600); // turn right
+    delay(600);           // turn right
   }
-  if (directionn == 4) // if directionn = 4
+  if (directionn == 4)    // if directionn = 4
   {
     back();
     delay(600);
     left();
-    delay(600); // turn left
+    delay(600);           // turn left
   }
-  if (directionn == 8) // if directionn = 8
+  if (directionn == 8)    // if directionn = 8
   {
-    advance(); // move forward
+    advance();            // move forward
     delay(100);
   }
 }

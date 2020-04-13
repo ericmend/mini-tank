@@ -55,8 +55,8 @@ void setup()
   pinMode(Trig1_pin, OUTPUT); // initialize the pulse pin as output:
   pinMode(Echo1_pin, INPUT);  // initialize the echo_pin pin as an input:
   //ultrasonic 2
-  pinMode(7, OUTPUT);        // initialize the pulse pin as output:
-  pinMode(Echo2_pin, INPUT); // initialize the echo_pin pin as an input:
+  pinMode(Trig2_pin, OUTPUT); // initialize the pulse pin as output:
+  pinMode(Echo2_pin, INPUT);  // initialize the echo_pin pin as an input:
   // motors
   motorR.attach(MotorRPin);
   motorL.attach(MotorLPin);
@@ -152,11 +152,11 @@ void checkTheRightWall()
 
 void checkTheLeftWall()
 {
-  digitalWrite(7, LOW);
+  digitalWrite(Trig2_pin, LOW);
   delayMicroseconds(2);
-  digitalWrite(7, HIGH);
+  digitalWrite(Trig2_pin, HIGH);
   delayMicroseconds(10);
-  digitalWrite(7, LOW);
+  digitalWrite(Trig2_pin, LOW);
   duration2 = pulseIn(Echo2_pin, 10);
   Serial.println("Duration2:  ");
   Serial.println(duration2, DEC);

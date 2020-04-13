@@ -66,7 +66,7 @@ void setup()
 
   // ultrasonic
   //  pinMode(Trig_pin, OUTPUT);        // initialize the pulse pin as output:
-  //  pinMode(Echo_pin, INPUT);       // initialize the echo_pin pin as an input:
+  //  pinMode(Echo_pin, INPUT);         // initialize the echo_pin pin as an input:
 
   // motorsmmmmmmmmm
   motor1.attach(Motor1Pin);
@@ -82,7 +82,6 @@ void setup()
 // Next to do is to encorporate beginning and destination as well as optimum path finding
 //
 // Last is to use the ultrasonic with the grid.
-
 void loop()
 {
 
@@ -168,20 +167,19 @@ void moveForward()
     ycoordinate = ycoordinate + 1;
   if (robotDirection == 3)
     xcoordinate = xcoordinate - 1;
-  delay(100);
-  /*Serial.print("  xcoordinate " );
-    Serial.print(xcoordinate);
-    delay (500);
-    Serial.print(" ycoordinate ");
-    Serial.print(ycoordinate);
-    delay (500);
-    Serial.print("  robot direction: ");
-    Serial.print(robotDirection);
-    delay(500);
-    Serial.println ();
-    delay(1000);
+  //  delay(100);
+  //  Serial.print("  xcoordinate " );
+  //  Serial.print(xcoordinate);
+  //  delay (500);
+  //  Serial.print(" ycoordinate ");
+  //  Serial.print(ycoordinate);
+  //  delay (500);
+  //  Serial.print("  robot direction: ");
+  //  Serial.print(robotDirection);
+  //  delay(500);
+  //  Serial.println ();
 
-  */
+
   delay(800);
 }
 
@@ -203,19 +201,19 @@ void turnRight()
     robotDirection = 3;
   else if (robotDirection == 3)
     robotDirection = 0;
-  delay(500);
-  Serial.print("  xcoordinate ");
-  Serial.print(xcoordinate);
-  delay(500);
-  Serial.print(" ycoordinate ");
-  Serial.print(ycoordinate);
-  delay(500);
-  Serial.print("  robot direction: ");
-  Serial.print(robotDirection);
-  delay(500);
-  Serial.println();
+  //  delay(500);
+  //  Serial.print("  xcoordinate ");
+  //  Serial.print(xcoordinate);
+  //  delay(500);
+  //  Serial.print(" ycoordinate ");
+  //  Serial.print(ycoordinate);
+  //  delay(500);
+  //  Serial.print("  robot direction: ");
+  //  Serial.print(robotDirection);
+  //  delay(500);
+  //  Serial.println();
 
-  delay(1000);
+  delay(800);
 }
 
 // Turns 90 degrees to the Left
@@ -236,18 +234,20 @@ void turnLeft()
     robotDirection = 1;
   else if (robotDirection == 3)
     robotDirection = 2;
-  delay(500);
-  Serial.print("  xcoordinate ");
-  Serial.print(xcoordinate);
-  delay(500);
-  Serial.print(" ycoordinate ");
-  Serial.print(ycoordinate);
-  delay(500);
-  Serial.print("  robot direction: ");
-  Serial.print(robotDirection);
-  delay(500);
-  Serial.println();
-  delay(1000);
+  //  delay(500);
+  //  Serial.print("  xcoordinate ");
+  //  Serial.print(xcoordinate);
+  //  delay(500);
+  //  Serial.print(" ycoordinate ");
+  //  Serial.print(ycoordinate);
+  //  delay(500);
+  //  Serial.print("  robot direction: ");
+  //  Serial.print(robotDirection);
+  //  delay(500);
+  //  Serial.println();
+
+
+  delay(800);
 }
 
 // Turns 180 degrees
@@ -263,19 +263,19 @@ void turnAround()
     robotDirection = 0;
   else if (robotDirection == 3)
     robotDirection = 1;
-  delay(500);
-  Serial.print("  xcoordinate ");
-  Serial.print(xcoordinate);
-  delay(500);
-  Serial.print(" ycoordinate ");
-  Serial.print(ycoordinate);
-  delay(500);
-  Serial.print("  robot direction: ");
-  Serial.print(robotDirection);
-  delay(500);
-  Serial.println();
+  //  delay(500);
+  //  Serial.print("  xcoordinate ");
+  //  Serial.print(xcoordinate);
+  //  delay(500);
+  //  Serial.print(" ycoordinate ");
+  //  Serial.print(ycoordinate);
+  //  delay(500);
+  //  Serial.print("  robot direction: ");
+  //  Serial.print(robotDirection);
+  //  delay(500);
+  //  Serial.println();
 
-  delay(1000);
+  delay(800);
 }
 
 // Gets the number on the Grid of the space right in front of it.
